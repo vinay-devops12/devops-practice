@@ -2,7 +2,7 @@
 
 AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z008852933HNZNSM0V91L"
-DOMAIN_NAME="DAWS-90S"
+DOMAIN_NAME="daws-90s.shop"
 
 for instance in $@
 do
