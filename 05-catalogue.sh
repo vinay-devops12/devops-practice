@@ -2,8 +2,9 @@
 #!/bin/bash
 
 LOGS_FOLDER="/var/log/roboshop"
-SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )  
-mkdir -p $LOGS_FOLDER
+sudo mkdir -p $LOGS_FOLDER
+sudo chown -R ec2-user:ec2-user $LOGS_FOLDER
+sudo chmod -R 755 $LOGS_FOLDER
 LOGS_FILE="$LOGS_FOLDER/$(basename $0).log"
 
 USERID=$(id -u)
@@ -60,7 +61,7 @@ VALIDATE $? "extracted catalogue code"
 npm install &>>$LOGS_FILE
 VALIDATE $? "installing the dependencies"
 
-cp $SCRIPT_DIR/mongo.repo /ecc/systemd/system/catalogue.service
+cp $SCRIPT_DIR/catalogu.service /ecc/systemd/system/catalogue.service
 VALIDATE $? "copying catalogue.service"
      
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
