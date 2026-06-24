@@ -85,3 +85,13 @@ VALIDATE $? "enable catalogue"
 
 systemctl restart catalogue &>>$LOGS_FILE
 VALIDATE $? "Restarting catalogue"
+
+systemctl daemon-reload
+VALIDATE $? "Load the service"
+
+
+systemctl enable catalogue 
+VALIDATE $? "enable catalogue"
+
+systemctl start catalogue
+VALIDATE $? "start catalogue"
