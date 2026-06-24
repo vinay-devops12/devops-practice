@@ -1,10 +1,9 @@
-
+            
 #!/bin/bash
 
 LOGS_FOLDER="/var/log/roboshop"
-sudo mkdir -p $LOGS_FOLDER
-sudo chown -R ec2-user:ec2-user $LOGS_FOLDER
-sudo chmod -R 755 $LOGS_FOLDER
+SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )  
+mkdir -p $LOGS_FOLDER
 LOGS_FILE="$LOGS_FOLDER/$(basename $0).log"
 
 USERID=$(id -u)
@@ -30,36 +29,36 @@ VALIDATE() {
     fi
 }
 
+dnf module disable nodejs -y &>>$LOGS_FILE
+VALIDATE $? "disable nodejs"
 
-         dnf module disable nodejs -y &>>$LOGS_FILE
-         VALIDATE $? "disable nodejs"
+dnf module enable nodejs:20 -y &>>$LOGS_FILE
+VALIDATE $? "enable nodejs:20"
 
-         dnf module enable nodejs:20 -y &>>$LOGS_FILE
-         VALIDATE $? "enable nodejs:20"
+dnf install nodejs -y &>>$LOGS_FILE
+VALIDATE $? "installing nodejs"
 
-            dnf install nodejs -y &>>$LOGS_FILE
-            VALIDATE $? "installing nodejs"
+#  Idempotent useradd
+id roboshop &>>$LOGS_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
+    VALIDATE $? "creating user"
+else
+    echo -e "$TIMESTAMP [INFO] $G roboshop user already exists $N" | tee -a $LOGS_FILE
+fi
 
-            useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
-            VALIDATE $? "creating roboshop system user"
+mkdir -p /app &>>$LOGS_FILE
+VALIDATE $? "creating directory"
 
-              
-               mkdir -p /app &>>$LOGS_FILE
-               VALIDATE $? "creating directory"
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILE
+VALIDATE $? "downloading catalogue code"
 
+cd /app
+unzip -o /tmp/catalogue.zip &>>$LOGS_FILE
+VALIDATE $? "extracted catalogue code"
 
-               curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILE
-                  VALIDATE $? "downloading catalogue code"
+npm install &>>$LOGS_FILE
+VALIDATE $? "installing the dependencies"
 
-                  cd /app &>>$LOGS_FILE
-                  unzip -o /tmp/catalogue.zip &>>$LOGS_FILE
-                  VALIDATE $? "extracted catalogue code"
-
-                 
-                     npm install &>>$LOGS_FILE
-                     VALIDATE $? "installing the dependencies"
-
-                   cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
-                   VALIDATE $? "copying catalogue.service"
-
-                    
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
+VALIDATE $? "copying catalogue service"
