@@ -59,5 +59,27 @@ VALIDATE $? "extracted catalogue code"
 
 npm install &>>$LOGS_FILE
 VALIDATE $? "installing the dependencies"
+
 cp /home/ec2-user/devops-practice/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
 VALIDATE $? "copying catalogue.service"
+     
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+VALIDATE $? "added mongo repo"
+
+dnf install mongodb-mongosh -y
+VALIDATE $? "Installed MongoDB client"
+
+INDEX=$(mongosh --host mongodb.daws-90s.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+
+if [ $INDEX -lt 0 ]; then
+    mongosh --host mongodb.daws-90s.shop < /app/db/master-data.js
+    VALIDATE $? "load products"
+else
+    echo -e "products already loaded ....$Y SKIPPING $N"
+fi
+
+systemctl enable catalogue &>>$LOGS_FILE
+VALIDATE $? "enable catalogue"
+
+systemctl restart catalogue &>>$LOGS_FILE
+VALIDATE $? "Restarting catalogue"
