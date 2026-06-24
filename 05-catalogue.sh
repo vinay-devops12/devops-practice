@@ -62,7 +62,7 @@ VALIDATE $? "extracted catalogue code"
 npm install &>>$LOGS_FILE
 VALIDATE $? "installing the dependencies"
 
-cp $SCRIPT_DIR/catalogu.service /ecc/systemd/system/catalogue.service
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "copying catalogue.service"
      
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
