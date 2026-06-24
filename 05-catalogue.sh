@@ -59,6 +59,5 @@ VALIDATE $? "extracted catalogue code"
 
 npm install &>>$LOGS_FILE
 VALIDATE $? "installing the dependencies"
-
-cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
+cp /home/ec2-user/devops-practice/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
 VALIDATE $? "copying catalogue.service"
