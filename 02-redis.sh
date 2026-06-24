@@ -5,7 +5,7 @@ LOGS_FOLDER="/var/log/roboshop"
 sudo mkdir -p $LOGS_FOLDER
 sudo chown -R ec2-user:ec2-user $LOGS_FOLDER
 sudo chmod -R 755 $LOGS_FOLDER
-LOGS_FILE="$LOGS_FOLDER/$(basename $0).log"
+LOGS_FILE="$LOGS_FOLDER/$.log"
 
 USERID=$(id -u)
 
@@ -30,13 +30,13 @@ VALIDATE() {
     fi
 }
 
-dnf module disable redis -y
+dnf module disable redis -y &>>$LOGS_FILE
 VALIDATE $? "disabling default redis module"
 
-dnf module enable redis:7 -y
+dnf module enable redis:7 -y &>>$LOGS_FILE
 VALIDATE $? "enabling redis:7 module"
 
-dnf install redis -y
+dnf install redis -y &>>$LOGS_FILE
 VALIDATE $? "installing redis:7"
 
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis/redis.conf
@@ -45,7 +45,7 @@ VALIDATE $? "allowing remote connections"
 sed -i '/protected-mode/c protected-mode no' /etc/redis/redis.conf
 VALIDATE $? "disabling protected mode"
 
-systemctl enable redis
+systemctl enable redis &>>$LOGS_FILE
 VALIDATE $? "enabling redis"
 
 systemctl start redis
