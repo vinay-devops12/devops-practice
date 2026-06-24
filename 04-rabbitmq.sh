@@ -6,6 +6,7 @@ sudo mkdir -p $LOGS_FOLDER
 sudo chown -R ec2-user:ec2-user $LOGS_FOLDER
 sudo chmod -R 755 $LOGS_FOLDER
 LOGS_FILE="$LOGS_FOLDER/$0log"
+  SCRIPT_DIR=$PWD
 
 USERID=$(id -u)
 
@@ -28,7 +29,16 @@ VALIDATE() {
     else
         echo -e "$TIMESTAMP [INFO] $G $2...SUCCESS $N" | tee -a $LOGS_FILE
     fi
-}
+}   
+
+    #  Idempotent useradd
+id roboshop &>>$LOGS_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
+    VALIDATE $? "creating user"
+else
+    echo -e "$TIMESTAMP [INFO] $G roboshop user already exists $N" | tee -a $LOGS_FILE
+fi
 
 
  
