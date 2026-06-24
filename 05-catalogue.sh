@@ -61,4 +61,4 @@ npm install &>>$LOGS_FILE
 VALIDATE $? "installing the dependencies"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
-VALIDATE $? "copying catalogue service"
+VALIDATE $? "copying catalogue.service"
