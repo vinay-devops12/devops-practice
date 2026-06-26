@@ -1,41 +1,30 @@
 #!/bin/bash
 
+#export PATH=$PATH:/usr/local/bin
+
 AMI_ID="ami-0220d79f3f480ecf5"
-ZONE_ID="Z008852933HNZNSM0V91L"
-DOMAIN_NAME="daws-90s.shop"
-
-
+ZONE_ID="Z07086101C1CVP7AT2UK4" # replace with your zone ID
+DOMAIN_NAME="daws90s.shop" # replace with your domain name
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
-TIMESTAMP=$(date "+%Y-%m-%d-%H:%M:%S")
-
-## validation ##
-
+### Validation ###
 if [ $# -lt 2 ]; then
-  
-  echo -e "$R ERROR:: At least two agreements required $N "
-
-  echo "usage :$0 [create/delete] [instance1] [instance2]..."
-
-   exit 1
+    echo -e "$R ERROR:: Atleast 2 arguments required $N"
+    echo "USAGE: $0 [create/delete] [instance1] [instance2...]"
+    exit 1
 fi
 
-    ACTION=$1
-     shift # first agrrement will be remove
+ACTION=$1
+shift # first argument will be removed
 
-if 
-   [ "$ACTION" != "create" ] && [ "$ACTION" != "delete" ]; then
-
-     echo -e "$R ERROR :: first aggrement must be either create or delete $N"
-      echo "USAGE: $0 [create/delete] [instance1] [instance2..] "
-          exit 1
+if [ "$ACTION" != "create" ] && [ "$ACTION" != "delete" ]; then
+    echo -e "$R ERROR:: First argument must be either create or delete $N"
+    echo "USAGE: $0 [create/delete] [instance1] [instance2...]"
+    exit 1
 fi
-
-  
-
 
 get_instance_id(){
     name=$1
