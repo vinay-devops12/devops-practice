@@ -53,3 +53,5 @@ do
             echo "roboshop-$instance already running: $INSTANCE_ID"
             
         fi
+done
+  
