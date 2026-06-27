@@ -34,7 +34,7 @@ get_instance_id(){
 for instance in $@
 do
     INSTANCE_ID=$(get_instance_id $instance)
-    if [ $ACTION == "create" ]; then
+    if [ "$ACTION" == "create" ]; then
         if [ "$INSTANCE_ID" == "None" ]; then
             echo "Launching Instance: roboshop-$instance"
             INSTANCE_ID=$( aws ec2 run-instances \
@@ -56,13 +56,13 @@ do
         # update R53 record
         if [ $instance == "frontend" ]; then
             IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
             --output text
             )
             R53_RECORD="$DOMAIN_NAME"
         else
             IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID \
-            --query 'Reservations[*].Instances[*].PrivateIpAddress' \
+            --query 'Reservations[0].Instances[0].PrivateIpAddress' \
             --output text
             )
             R53_RECORD="$instance.$DOMAIN_NAME"
@@ -100,3 +100,5 @@ do
         fi
     fi
 done
+
+
