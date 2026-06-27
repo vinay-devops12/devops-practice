@@ -35,12 +35,12 @@ for instance in $@
 do
     INSTANCE_ID=$(get_instance_id $instance)
     if [ $ACTION == "create" ]; then
-        if [ $INSTANCE_ID == "None" ]; then
+        if [ "$INSTANCE_ID" == "None" ]; then
             echo "Launching Instance: roboshop-$instance"
             INSTANCE_ID=$( aws ec2 run-instances \
             --image-id $AMI_ID \
             --instance-type t3.micro \
-            --security-groups "roboshop common" "roboshop-$instance" \
+            --security-groups "roboshop-common" "roboshop-$instance" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
             --query 'Instances[0].InstanceId' \
             --output text 
@@ -92,7 +92,7 @@ do
         '
         echo "updated R53 record for: $instance"
     else
-        if [ $INSTANCE_ID == "None" ]; then
+        if [ "$INSTANCE_ID" == "None" ]; then
             echo "$instance already destroyed, nothing to do..."
         else
             aws ec2 terminate-instances --instance-ids $INSTANCE_ID
