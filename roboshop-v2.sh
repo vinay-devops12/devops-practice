@@ -3,7 +3,7 @@
 #export PATH=$PATH:/usr/local/bin
 
 AMI_ID="ami-0220d79f3f480ecf5"
-ZONE_ID=Z04820742MSQA0TX8Y2UC" 
+ZONE_ID="Z04820742MSQA0TX8Y2UC" 
 DOMAIN_NAME="daws-90s.shop" 
 R="\e[31m"
 G="\e[32m"
